@@ -1,5 +1,4 @@
 require_relative  'poly_tree_node'
-require 'byebug'
 
 class KnightPathFinder
   X = [-2, -2, -1, -1, 1, 1, 2, 2]
@@ -22,8 +21,13 @@ class KnightPathFinder
   def initialize(pos)
     @root_pos = pos
     @considered_positions = [pos]
-
     build_move_tree
+  end
+
+  def find_path(end_pos)
+    # BFS appproach
+    target = root_node.bfs(end_pos)
+    trace_path_back(target).reverse
   end
 
   private
@@ -35,12 +39,13 @@ class KnightPathFinder
     queue = [root_node]
 
     until queue.empty?
-      fifo = queue.shift 
-      curr_pos = fifo.node_value
+      curr_node = queue.shift 
+      curr_pos = curr_node.value
       new_move_positions(curr_pos).each do |pos|
-        next_node = PolyTreeNode.new(pos)
-        next_node.add_child(next_node)
-        queue << next_node
+        child_node = PolyTreeNode.new(pos)
+        curr_node.add_child(child_node)
+        child_node.parent = curr_node
+        queue << child_node
       end
     end
   end
@@ -52,4 +57,15 @@ class KnightPathFinder
 
     remaining_moves
   end
+
+  def trace_path_back(trgt)
+    return [trgt.value] if trgt == root_node
+    [trgt.value] + trace_path_back(trgt.parent)
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  kpf = KnightPathFinder.new([0, 0])
+  p kpf.find_path([7, 6]) == [[0, 0], [1, 2], [2, 4], [3, 6], [5, 5], [7, 6]]
+  p kpf.find_path([6, 2]) == [[0, 0], [1, 2], [2, 0], [4, 1], [6, 2]]  
 end
