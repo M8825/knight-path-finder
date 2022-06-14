@@ -1,9 +1,21 @@
+# TODO, continue from phase1. Valid moves are not
 class KnightPathFinder
+  X = [-2, -2, -1, -1, 1, 1, 2, 2]
+  Y = [-1, 1, -2, 2, -2, 2, -1, 1]
+  
   def valid_moves(pos)
-    
+    row, col = pos 
+    possible_pos = []
+    X.each_index do |i|
+      next_row, next_col = row + X[i], col + Y[i]
+      next if next_row >= 0 && next_col >= 0
+      possible_pos << [next_row, next_col] 
+    end
+
+    possible_pos
   end
 
-  att_reader :root_node
+  attr_reader :root_node
 
   def initialize(pos)
     @board = init_board(8, pos)
@@ -29,5 +41,4 @@ class KnightPathFinder
 
     grid
   end
-
-end 
+end
