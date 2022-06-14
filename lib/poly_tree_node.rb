@@ -1,11 +1,12 @@
 class PolyTreeNode
-  att_accessor :node_value
+  attr_reader :node_value
 
-  def initialize(val = 0)
+  def initialize(val)
     @node_value = val
+    @children = []
   end
 
-  def []=(val)
-    @node_value == val
+  def add_child(pos)
+    @children << pos
   end
 end
